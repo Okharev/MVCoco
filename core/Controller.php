@@ -10,6 +10,17 @@ namespace core;
  */
 class Controller
 {
+    public string $layout = 'base';
+
+    /**
+     * sets the layout, by dfault it is base.php  v
+     * @param String $layout
+     */
+    public function setLayout(string $layout)
+    {
+        $this->layout = $layout;
+    }
+
     /**
      * @param $view
      * @param array $params

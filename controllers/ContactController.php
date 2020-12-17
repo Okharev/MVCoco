@@ -3,7 +3,9 @@
 
 namespace controllers;
 
+use core\Application;
 use core\Controller;
+use core\Request;
 
 /**
  * Class ContactController
@@ -12,6 +14,9 @@ use core\Controller;
 class ContactController extends Controller
 {
 
+    /**
+     * @return string|string[]
+     */
     public function index()
     {
         $params = [
@@ -32,10 +37,13 @@ class ContactController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return string
      */
-    public function handleContact()
+    public function handleContact(Request $request)
     {
+        $body = $request->getBody();
+
         return 'Im currently working ow your post data be patient 😘';
     }
 }

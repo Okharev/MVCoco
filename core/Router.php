@@ -29,7 +29,7 @@ class Router
      * @param String $path
      * @param $callback
      */
-    public function get(String $path, $callback): void
+    public function get(string $path, $callback): void
     {
         $this->routes['get'][$path] = $callback;
     }
@@ -38,11 +38,10 @@ class Router
      * @param String $path
      * @param $callback
      */
-    public function post(String $path, $callback): void
+    public function post(string $path, $callback): void
     {
         $this->routes['post'][$path] = $callback;
     }
-
 
     /**
      * resolve this route method and path checks its existence and returns the callback function
@@ -51,26 +50,27 @@ class Router
     public function resolve()
     {
         $path = $this->request->getPath();
-        $method = $this->request->getMethod();
+        $method = $this->request->method();
 
         $callback = $this->routes[$method][$path] ?? false;
 
-        if($callback === false) {
+        if ($callback === false) {
             $this->response->setStatusCode(404);
             return $this->renderView("/errors/_404");
         }
 
         // if it is a string then we render a the view corresponding to the string
-        if(is_string($callback)) {
+        if (is_string($callback)) {
             return $this->renderView($callback);
         }
 
         // if it is an array we instantiate the controller
-        if(is_array($callback)) {
-            $callback[0] = new $callback[0]();
+        if (is_array($callback)) {
+            Application::$app->controller = new $callback[0]();
+            $callback[0] = Application::$app->controller;
         }
 
-        return $callback();
+        return $callback($this->request);
     }
 
     /**
@@ -91,8 +91,10 @@ class Router
      */
     protected function layoutContent()
     {
+        $layout = Application::$app->controller->layout;
+
         ob_start();
-        include_once Application::$ROOT_DIR . "/views/layouts/base.php";
+        include_once Application::$ROOT_DIR . "/views/layouts/$layout.php";
         return ob_get_clean();
     }
 
